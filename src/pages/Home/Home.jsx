@@ -5,6 +5,19 @@ import { CoinContext } from "../../context/CoinContext";
 const Home = () => {
   const { allCoin, currency } = useContext(CoinContext);
   const [displayCoin, setDisplayCoin] = useState([]);
+  const [input, setInput] = useState("");
+
+  const inputHandler = (e) => {
+    setInput(e.target.value);
+  };
+
+  const searchHandler = async (e) => {
+    e.preventDefault();
+    const coins = await allCoin.filter((coin) => {
+      return coin.name.toLowerCase().includes(input.toLowerCase());
+    });
+    setDisplayCoin(coins);
+  };
 
   useEffect(() => {
     setDisplayCoin(allCoin);
@@ -18,8 +31,15 @@ const Home = () => {
           Crypto MarketPlace
         </h1>
         <p>Buy and sell cryptocurrencies.</p>
-        <form>
-          <input type="text" placeholder="Search crypto.." />
+        <form onSubmit={searchHandler}>
+          <input
+            onChange={inputHandler}
+            value={input}
+            required
+            type="text"
+            placeholder="Search crypto.."
+          />
+
           <button type="submit">Search</button>
         </form>
       </div>
