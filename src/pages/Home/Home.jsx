@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./Home.css";
 import { CoinContext } from "../../context/CoinContext";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const { allCoin, currency } = useContext(CoinContext);
@@ -9,6 +10,9 @@ const Home = () => {
 
   const inputHandler = (e) => {
     setInput(e.target.value);
+    if (e.target.value === "") {
+      setDisplayCoin(allCoin);
+    }
   };
 
   const searchHandler = async (e) => {
@@ -37,8 +41,15 @@ const Home = () => {
             value={input}
             required
             type="text"
+            list="coinlist"
             placeholder="Search crypto.."
           />
+
+          <datalist id="coinlist">
+            {allCoin.map((coin, index) => {
+              return <option key={index} value={coin.name} />;
+            })}
+          </datalist>
 
           <button type="submit">Search</button>
         </form>
@@ -54,7 +65,11 @@ const Home = () => {
         {Array.isArray(displayCoin) &&
           displayCoin.slice(0, 10).map((coin, index) => {
             return (
-              <div className="table-layout" key={coin.id}>
+              <Link
+                to={`/coin/${coin.id}`}
+                className="table-layout"
+                key={coin.id}
+              >
                 <p>{coin.market_cap_rank}</p>
                 {/* other coin details */}
                 <div>
@@ -72,7 +87,7 @@ const Home = () => {
                 <p className="market-cap">
                   {currency.symbol} {coin.market_cap.toLocaleString()}
                 </p>
-              </div>
+              </Link>
             );
           })}
       </div>
